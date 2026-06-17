@@ -29,7 +29,7 @@ const transporter = nodemailer.createTransport({
 app.post("/api/contact", (req,res) => {
 
     // create a name, email and message variable holding the content from the req.body
-    const {name, company, email, phone, response, message} = req.body
+    const {name, company, email, phone, response, subjects, message} = req.body
 
     // server-side data validation
     if (!name || !response || !message) {
@@ -39,6 +39,9 @@ app.post("/api/contact", (req,res) => {
             error: "Name, Would you like a response and Message fields are required."
         })
     }
+
+    // convert subjects array to a clean string list or set it to a fallback message if they checked nothing
+    const selectedSubjectsList = subjects && subjects.length > 0 ? subjects.join(", ") : "No discussion topic selected"
 
     // define the format and routing layout of the incoming notification email
     const mailOptions = {
@@ -55,7 +58,14 @@ app.post("/api/contact", (req,res) => {
             <p><strong>Company:</strong> ${company && company.trim() !== "" ? company : "No company provided"}</p>
             <p><strong>Email:</strong> ${email && email.trim() !== "" ? email : "No email provided"}</p>
             <p><strong>Phone Number:</strong> ${phone && phone.trim() !== "" ? phone : "No phone number provided"}</>
+
+            <hr />
+
             <p><strong>Would they like a response:</strong> ${response}</p>
+            <p><Strong>What would they like to talk about:</strong> ${selectedSubjectsList}</p>
+
+            <hr />
+            
             <p><strong>Message:</strong></p>
             <p>${message}</p>
         `,
