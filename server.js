@@ -1,3 +1,33 @@
+// import express, nodemailer, cors and dotenv
+const express = require("express")
+const nodemailer = require("nodemailer")
+const cors = require("cors")
+const dotenv = require("dotenv")
+
+// loads evertyhing from our .env file
+dotenv.config()
+
+// set up express app
+const app = express()
+
+// enable cors so the React app running on port 5173 can talk to this server
+app.use(cors({
+    origin: "https://portfolio-2026-front-end.onrender.com",
+    methods: ["GET", "POST"]
+}))
+
+// parse incoming JSON data
+app.use(express.json())
+
+// configure Nodemailer with my email provider credentials
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    }
+})
+
 // create the API endpoint to handle contact form submissions
 app.post("/api/contact", (req, res) => {
   // create a name, email and message variable holding the content from the req.body
@@ -48,3 +78,9 @@ app.post("/api/contact", (req, res) => {
     return res.status(200).json({ success: "Message sent successfully!" })
   })
 })
+
+// assign the port
+const PORT = process.env.PORT || 5000
+
+// start listening and send a message to the console so we know the server is listening successfully
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
