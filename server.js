@@ -12,7 +12,7 @@ const app = express()
 
 // enable cors so the React app running on Render can talk to this server
 app.use(cors({ 
-  origin: "https://onrender.com", 
+  origin: "https://portfolio-2026-front-end.onrender.com", 
   methods: ["GET", "POST"] 
 }))
 
