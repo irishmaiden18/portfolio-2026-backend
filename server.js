@@ -11,7 +11,10 @@ dotenv.config()
 const app = express()
 
 // enable cors so the React app running on port 5173 can talk to this server
-app.use(cors())
+app.use(cors({
+    origin: "https://portfolio-2026-front-end.onrender.com",
+    methods: ["GET", "POST"]
+}))
 
 // parse incoming JSON data
 app.use(express.json())
