@@ -22,6 +22,21 @@ app.use(express.json())
 // CHANGED: Configure Resend using your dashboard API key
 const resend = new Resend(process.env.RESEND_API_KEY)
 
+// Security Middleware: Only allow requests routing through Cloudflare
+app.use((req, res, next) => {
+  // Cloudflare always injects 'cf-connecting-ip' for proxied web traffic
+  const isFromCloudflare = req.headers['cf-connecting-ip'];
+
+  if (!isFromCloudflare) {
+    console.warn(`⚠️ Blocked a direct non-Cloudflare request from IP: ${req.ip}`);
+    return res.status(403).json({ 
+      error: "Access Denied. Direct connection to the origin server is forbidden." 
+    });
+  }
+
+  next(); // Pass through safely if the header exists
+});
+
 // Add a simple root route to act as a health check for Render
 app.get("/", (req, res) => {
   res.status(200).send("Server is awake and healthy!")
