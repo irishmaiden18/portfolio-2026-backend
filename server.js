@@ -20,13 +20,22 @@ app.use(cors({
 app.use(express.json())
 
 // configure Nodemailer with my email provider credentials
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
+const transporter = (process.env.EMAIL_USER && process.env.EMAIL_PASS) 
+  ? nodemailer.createTransport({
+      service: "gmail",
+      host: "://gmail.com",
+      port: 465,
+      secure: true, // true for port 465, false for other ports
+      auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
-    }
-})
+      },
+      tls: {
+        // This prevents Render from rejecting the local SSL certificate handshake
+        rejectUnauthorized: false 
+      }
+    })
+  : null;
 
 // create the API endpoint to handle contact form submissions
 app.post("/api/contact", (req, res) => {
