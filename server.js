@@ -17,7 +17,7 @@ const app = express()
 // }))
 
 app.use(cors({ 
-  origin: "https://www.webdesignbylaura.com", 
+  origin: "https://webdesignbylaura.com", 
   methods: ["GET", "POST"] 
 }))
 
